@@ -35,7 +35,10 @@ static bool tile_flag_at(int x, int y, int w, int h, int flag);
 static int tile_at(int x, int y);
 static bool spikes_at(float x, float y, int w, int h, float xspd, float yspd);
 
+//以颜色编号表示的显存
 uint8_t pico8_display_memory[128][128];
+
+//真正用于显示的显存
 extern uint16_t display_mem[128][128];
 
 // 适用于pal函数的颜色替换
@@ -165,6 +168,21 @@ static inline void P8circfill(int X, int Y, int r, int color)
 static inline void P8rectfill(int x, int y, int x2, int y2, int c)
 {
 	int i, j;
+
+	int t;
+	if (x > x2)
+	{
+		t = x;
+		x = x2;
+		x2 = t;
+	}
+	if (y > y2)
+	{
+		t = y;
+		y = y2;
+		y2 = t;
+	}
+
 	for (i = x; i <= x2; i++)
 	{
 		for (j = y; j <= y2; j++)
@@ -2444,23 +2462,24 @@ void Celeste_P8__DEBUG(void)
 }
 
 // all of the global game variables; this holds the entire game state (exc. music/sounds playing)
-#define LISTGVARS(V)                                                                   \
-	V(rnd_seed_lo)                                                                     \
-	V(rnd_seed_hi)                                                                     \
-	V(room)                                                                            \
-	V(freeze)                                                                          \
-	V(shake)                                                                           \
-	V(will_restart)                                                                    \
-	V(delay_restart)                                                                   \
-	V(got_fruit)                                                                       \
-	V(has_dashed)                                                                      \
-	V(sfx_timer)                                                                       \
-	V(has_key)                                                                         \
-	V(pause_player)                                                                    \
-	V(flash_bg)                                                                        \
-	V(music_timer)                                                                     \
-		V(new_bg) V(frames) V(seconds) V(minutes) V(deaths) V(max_djump) V(start_game) \
-			V(start_game_flash) V(clouds) V(particles) V(dead_particles) V(objects)
+#define LISTGVARS(V)                                                     \
+	V(rnd_seed_lo)                                                       \
+	V(rnd_seed_hi)                                                       \
+	V(room)                                                              \
+	V(freeze)                                                            \
+	V(shake)                                                             \
+	V(will_restart)                                                      \
+	V(delay_restart)                                                     \
+	V(got_fruit)                                                         \
+	V(has_dashed)                                                        \
+	V(sfx_timer)                                                         \
+	V(has_key)                                                           \
+	V(pause_player)                                                      \
+	V(flash_bg)                                                          \
+	V(music_timer)                                                       \
+	V(new_bg)                                                            \
+	V(frames) V(seconds) V(minutes) V(deaths) V(max_djump) V(start_game) \
+		V(start_game_flash) V(clouds) V(particles) V(dead_particles) V(objects)
 
 size_t Celeste_P8_get_state_size(void)
 {
