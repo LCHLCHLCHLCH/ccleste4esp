@@ -7,6 +7,7 @@
 #include "celeste.h"
 
 #include "sprite.h"
+#include "map_data.h"
 
 #ifdef __cplusplus
 #define this xthis // this is a keyword in C++
@@ -158,8 +159,8 @@ static inline void P8circfill(int X, int Y, int r, int color)
 		for (j = -x; j < x; j++)
 		{
 			/*在指定区域画点，填充部分圆*/
-			OLED_DrawPoint(X - y, Y + j);
-			OLED_DrawPoint(X + y, Y + j);
+			// OLED_DrawPoint(X - y, Y + j);
+			// OLED_DrawPoint(X + y, Y + j);
 			pico8_display_memory[X - y][Y + j] = color;
 			pico8_display_memory[X + y][Y + j] = color;
 		}

@@ -314,7 +314,7 @@ void LCD_ShowFloatNum1(u16 x, u16 y, float num, u8 len, u16 fc, u16 bc, u8 sizey
 ******************************************************************************/
 void LCD_ShowPicture(u16 x, u16 y, u16 length, u16 width, const u8 pic[])
 {
-	u16 i;
+	// u16 i;
 	LCD_Address_Set(x, y, x + length - 1, y + width - 1);
 }
 

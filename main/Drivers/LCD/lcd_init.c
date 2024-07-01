@@ -17,7 +17,7 @@ void LCD_Peripherals_Init(void)
 	esp_err_t ret;
 
 	spi_bus_config_t buscfg = {
-		.miso_io_num = NULL,
+		.miso_io_num = 0,
 		.mosi_io_num = LCD_MOSI_PIN,
 		.sclk_io_num = LCD_SCL_PIN,
 		.quadwp_io_num = -1,
