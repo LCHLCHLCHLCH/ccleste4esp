@@ -15,13 +15,13 @@
 #endif
 
 // i cant be bothered to put all function declarations in an appropiate place so ill just toss them all here:
-void PRELUDE(void);
-void PRELUDE_initclouds(void);
-void PRELUDE_initparticles(void);
-void title_screen(void);
-void load_room(int x, int y);
-void next_room(void);
-void restart_room(void);
+static void PRELUDE(void);
+static void PRELUDE_initclouds(void);
+static void PRELUDE_initparticles(void);
+static void title_screen(void);
+static void load_room(int x, int y);
+static void next_room(void);
+static void restart_room(void);
 
 #define bool Celeste_P8_bool_t
 #define false 0
@@ -37,15 +37,15 @@ enum
 	k_dash = 5
 };
 
-float clamp(float val, float a, float b);
-float appr(float val, float target, float amount);
-float sign(float v);
-bool maybe(void);
-bool solid_at(int x, int y, int w, int h);
-bool ice_at(int x, int y, int w, int h);
-bool tile_flag_at(int x, int y, int w, int h, int flag);
-int tile_at(int x, int y);
-bool spikes_at(float x, float y, int w, int h, float xspd, float yspd);
+static float clamp(float val, float a, float b);
+static float appr(float val, float target, float amount);
+static float sign(float v);
+static bool maybe(void);
+static bool solid_at(int x, int y, int w, int h);
+static bool ice_at(int x, int y, int w, int h);
+static bool tile_flag_at(int x, int y, int w, int h, int flag);
+static int tile_at(int x, int y);
+static bool spikes_at(float x, float y, int w, int h, float xspd, float yspd);
 
 // 以颜色编号表示的显存
 uint8_t pico8_display_memory[128][128];
@@ -61,18 +61,18 @@ int8_t pal_after;
 // 用于记录目前是哪一张地图
 uint8_t map_x, map_y;
 
-void pico8_srand(unsigned seed);
+static void pico8_srand(unsigned seed);
 void Celeste_P8_set_rndseed(unsigned seed)
 {
 	pico8_srand(seed);
 }
 
 ///////PICO-8 functions
-inline void P8spr(int sprite, int x, int y, int cols, int rows, bool flipx, bool flipy)
+static inline void P8spr(int sprite, int x, int y, int cols, int rows, bool flipx, bool flipy)
 {
 	// 根据序号计算精灵在精灵表上的位置
-	int p_x = sprite / 16;
-	int p_y = sprite % 16;
+	int p_x = sprite % 16;
+	int p_y = sprite / 16;
 	int i, j;
 
 	for (i = 0; i < 8; i++)
@@ -80,11 +80,11 @@ inline void P8spr(int sprite, int x, int y, int cols, int rows, bool flipx, bool
 		for (j = 0; j < 8; j++)
 		{
 			// pico8_display_memory[x + i][y + j] = sprite_sheet[(p_x * 8 + i) + (p_y * 8 + j) * 128];
-			pico8_display_memory[x + i][y + j] = sprite_sheet[(p_y * 8 + j)][(p_x * 8 + i)];
+			pico8_display_memory[y + j][x + i] = sprite_sheet[(p_y * 8 + j)][(p_x * 8 + i)];
 		}
 	}
 }
-inline bool P8btn(int b)
+static inline bool P8btn(int b)
 {
 	switch (b)
 	{
@@ -104,15 +104,15 @@ inline bool P8btn(int b)
 		return 1;
 	}
 }
-inline void P8pal(int a, int b)
+static inline void P8pal(int a, int b)
 {
 	color_replace = 1;
 }
-inline void P8pal_reset()
+static inline void P8pal_reset()
 {
 	color_replace = 0;
 }
-inline void P8circfill(int X, int Y, int r, int color)
+static inline void P8circfill(int X, int Y, int r, int color)
 {
 	int16_t x, y, d, j;
 
@@ -195,7 +195,7 @@ inline void P8circfill(int X, int Y, int r, int color)
 		}
 	}
 }
-inline void P8rectfill(int x, int y, int x2, int y2, int c)
+static inline void P8rectfill(int x, int y, int x2, int y2, int c)
 {
 	int i, j;
 
@@ -221,11 +221,11 @@ inline void P8rectfill(int x, int y, int x2, int y2, int c)
 		}
 	}
 }
-inline void P8print(const char *str, int x, int y, int c)
+static inline void P8print(const char *str, int x, int y, int c)
 {
 	// Celeste_P8_call(CELESTE_P8_PRINT, str, x, y, c);
 }
-inline void P8line(int X0, int Y0, int X1, int Y1, int c)
+static inline void P8line(int X0, int Y0, int X1, int Y1, int c)
 {
 	// Celeste_P8_call(CELESTE_P8_LINE, x, y, x2, y2, c);
 	int16_t x, y, dx, dy, d, incrE, incrNE, temp;
@@ -379,20 +379,20 @@ inline void P8line(int X0, int Y0, int X1, int Y1, int c)
 		}
 	}
 }
-inline int P8mget(int x, int y)
+static inline int P8mget(int x, int y)
 {
 	uint8_t spr;
 	spr = map_data[map_y][map_x][y][x];
 	return spr;
 }
-inline bool P8fget(int t, int f)
+static inline bool P8fget(int t, int f)
 {
 	return true;
 }
-inline void P8camera(int x, int y)
+static inline void P8camera(int x, int y)
 {
 }
-inline void P8map(int mx, int my, int tx, int ty, int mw, int mh, int mask)
+static inline void P8map(int mx, int my, int tx, int ty, int mw, int mh, int mask)
 {
 	map_x = mx;
 	map_y = my;
@@ -408,8 +408,8 @@ inline void P8map(int mx, int my, int tx, int ty, int mw, int mh, int mask)
 	}
 }
 // these values dont matter as set_rndseed should be called before init, as long as they arent both zero
-unsigned rnd_seed_lo = 0, rnd_seed_hi = 1;
-int pico8_random(int max)
+static unsigned rnd_seed_lo = 0, rnd_seed_hi = 1;
+static int pico8_random(int max)
 { // decomp'd pico-8
 	if (!max)
 		return 0;
@@ -417,7 +417,7 @@ int pico8_random(int max)
 	rnd_seed_lo += rnd_seed_hi;
 	return rnd_seed_hi % (unsigned)max;
 };
-void pico8_srand(unsigned seed)
+static void pico8_srand(unsigned seed)
 { // also decomp'd
 	if (seed == 0)
 	{
@@ -436,7 +436,7 @@ void pico8_srand(unsigned seed)
 	rnd_seed_lo = seed;
 }
 
-float P8modulo(float a, float b)
+static float P8modulo(float a, float b)
 {
 	return fmodf(fmodf(a, b) + b, b);
 }
@@ -444,12 +444,12 @@ float P8modulo(float a, float b)
 #define P8min fminf
 #define P8abs fabsf
 #define P8flr floorf
-float P8rnd(float max)
+static float P8rnd(float max)
 {
 	int n = pico8_random(max * (1 << 16));
 	return (float)n / (1 << 16);
 }
-float P8sin(float x)
+static float P8sin(float x)
 {
 	return -sinf(x * 6.2831853071796f); // https://pico-8.fandom.com/wiki/Math
 }
@@ -476,27 +476,27 @@ typedef struct
 	int x, y;
 } VECI;
 
-VECI room = {.x = 0, .y = 0};
-//  int num_objects = 0;
-int freeze = 0;
-int shake = 0;
-bool will_restart = false;
-int delay_restart = 0;
-bool got_fruit[FRUIT_COUNT] = {false};
-bool has_dashed = false;
-int sfx_timer = 0;
-bool has_key = false;
-bool pause_player = false;
-bool flash_bg = false;
-int music_timer = 0;
+static VECI room = {.x = 0, .y = 0};
+// static int num_objects = 0;
+static int freeze = 0;
+static int shake = 0;
+static bool will_restart = false;
+static int delay_restart = 0;
+static bool got_fruit[FRUIT_COUNT] = {false};
+static bool has_dashed = false;
+static int sfx_timer = 0;
+static bool has_key = false;
+static bool pause_player = false;
+static bool flash_bg = false;
+static int music_timer = 0;
 
 // these are originally implicit globals defined in title_screen()
-bool new_bg = false;
-int frames, seconds;
-short minutes; // this variable can overflow in normal gameplay (after +500 hours)
-int deaths, max_djump;
-bool start_game;
-int start_game_flash;
+static bool new_bg = false;
+static int frames, seconds;
+static short minutes; // this variable can overflow in normal gameplay (after +500 hours)
+static int deaths, max_djump;
+static bool start_game;
+static int start_game_flash;
 
 // with this X macro table thing we can define the properties that each object type has, in the original lua code these properties
 // are inferred from the `types` table
@@ -532,7 +532,7 @@ typedef enum
 // entry point //
 /////////////////
 
-void PRELUDE()
+static void PRELUDE()
 {
 	// top-level init code has been moved into functions that are called here
 	PRELUDE_initclouds();
@@ -551,7 +551,7 @@ void Celeste_P8_init()
 	title_screen();
 }
 
-void title_screen()
+static void title_screen()
 {
 	for (int i = 0; i <= 29; i++)
 		got_fruit[i] = false;
@@ -564,7 +564,7 @@ void title_screen()
 	load_room(7, 3);
 }
 
-void begin_game()
+static void begin_game()
 {
 	frames = 0;
 	seconds = 0;
@@ -574,12 +574,12 @@ void begin_game()
 	load_room(0, 0);
 }
 
-int level_index()
+static int level_index()
 {
 	return room.x % 8 + room.y * 8;
 }
 
-bool is_title()
+static bool is_title()
 {
 	return level_index() == 31;
 }
@@ -591,9 +591,9 @@ typedef struct
 {
 	float x, y, spd, w;
 } CLOUD;
-CLOUD clouds[17];
+static CLOUD clouds[17];
 // top level init code has been moved into a function
-void PRELUDE_initclouds()
+static void PRELUDE_initclouds()
 {
 	for (int i = 0; i <= 16; i++)
 	{
@@ -612,11 +612,11 @@ typedef struct
 	float x, y, s, spd, off, c, h, t;
 	VEC spd2; // used by dead particles, moved from spd
 } PARTICLE;
-PARTICLE particles[25];
-PARTICLE dead_particles[8];
+static PARTICLE particles[25];
+static PARTICLE dead_particles[8];
 
 // top level init code has been moved into a function
-void PRELUDE_initparticles()
+static void PRELUDE_initparticles()
 {
 	for (int i = 0; i <= 24; i++)
 	{
@@ -708,11 +708,11 @@ typedef struct
 } OBJ;
 
 // OBJ function declarations fuckery
-#define when_Y(x) void x(OBJ *this);
+#define when_Y(x) static void x(OBJ *this);
 #define when_N(x) enum \
 {                      \
 	x = 0              \
-}; // OBJTYPE_prop definition requires a constant value, and ` cost void* x = NULL` doesn't count
+}; // OBJTYPE_prop definition requires a constant value, and `static cost void* x = NULL` doesn't count
 #define X(name, t, has_init, has_update, has_draw, if_not_fruit) \
 	when_##has_init(name##_init)                                 \
 		when_##has_update(name##_update)                         \
@@ -732,7 +732,7 @@ struct objprop
 	bool if_not_fruit;
 };
 
-const struct objprop OBJTYPE_prop[] = {
+static const struct objprop OBJTYPE_prop[] = {
 #define X(name, t, has_init, has_update, has_draw, _if_not_fruit) \
 	[OBJ_##name] = {                                              \
 		.tile = t,                                                \
@@ -747,30 +747,30 @@ const struct objprop OBJTYPE_prop[] = {
 
 #define OBJ_PROP(o) OBJTYPE_prop[(o)->type]
 
-OBJ objects[MAX_OBJECTS] = {{.active = false}};
+static OBJ objects[MAX_OBJECTS] = {{.active = false}};
 
-void create_hair(OBJ *obj);
-void set_hair_color(int c);
-void draw_hair(OBJ *obj, int facing);
-void unset_hair_color(void);
-void kill_player(OBJ *obj);
-void break_fall_floor(OBJ *obj);
-void draw_time(float x, float y);
-OBJ *init_object(OBJTYPE type, float x, float y);
-void destroy_object(OBJ *obj);
-void draw_object(OBJ *obj);
+static void create_hair(OBJ *obj);
+static void set_hair_color(int c);
+static void draw_hair(OBJ *obj, int facing);
+static void unset_hair_color(void);
+static void kill_player(OBJ *obj);
+static void break_fall_floor(OBJ *obj);
+static void draw_time(float x, float y);
+static OBJ *init_object(OBJTYPE type, float x, float y);
+static void destroy_object(OBJ *obj);
+static void draw_object(OBJ *obj);
 
 // OBJECT FUNCTIONS MOVED HERE
 
-bool OBJ_is_solid(OBJ *obj, float ox, float oy);
-bool OBJ_is_ice(OBJ *obj, float ox, float oy);
-OBJ *OBJ_collide(OBJ *obj, OBJTYPE type, float ox, float oy);
-bool OBJ_check(OBJ *obj, OBJTYPE type, float ox, float oy);
-void OBJ_move(OBJ *obj, float ox, float oy);
-void OBJ_move_x(OBJ *obj, float amount, float start);
-void OBJ_move_y(OBJ *obj, float amount);
+static bool OBJ_is_solid(OBJ *obj, float ox, float oy);
+static bool OBJ_is_ice(OBJ *obj, float ox, float oy);
+static OBJ *OBJ_collide(OBJ *obj, OBJTYPE type, float ox, float oy);
+static bool OBJ_check(OBJ *obj, OBJTYPE type, float ox, float oy);
+static void OBJ_move(OBJ *obj, float ox, float oy);
+static void OBJ_move_x(OBJ *obj, float amount, float start);
+static void OBJ_move_y(OBJ *obj, float amount);
 
-bool OBJ_is_solid(OBJ *obj, float ox, float oy)
+static bool OBJ_is_solid(OBJ *obj, float ox, float oy)
 {
 	if (oy > 0 && !OBJ_check(obj, OBJ_PLATFORM, ox, 0) && OBJ_check(obj, OBJ_PLATFORM, ox, oy))
 	{
@@ -779,12 +779,12 @@ bool OBJ_is_solid(OBJ *obj, float ox, float oy)
 	return solid_at(obj->x + obj->hitbox.x + ox, obj->y + obj->hitbox.y + oy, obj->hitbox.w, obj->hitbox.h) || OBJ_check(obj, OBJ_FALL_FLOOR, ox, oy) || OBJ_check(obj, OBJ_FAKE_WALL, ox, oy);
 }
 
-bool OBJ_is_ice(OBJ *obj, float ox, float oy)
+static bool OBJ_is_ice(OBJ *obj, float ox, float oy)
 {
 	return ice_at(obj->x + obj->hitbox.x + ox, obj->y + obj->hitbox.y + oy, obj->hitbox.w, obj->hitbox.h);
 }
 
-OBJ *OBJ_collide(OBJ *obj, OBJTYPE type, float ox, float oy)
+static OBJ *OBJ_collide(OBJ *obj, OBJTYPE type, float ox, float oy)
 {
 	OBJ *other;
 	for (int i = 0; i < MAX_OBJECTS; i++)
@@ -802,12 +802,12 @@ OBJ *OBJ_collide(OBJ *obj, OBJTYPE type, float ox, float oy)
 	return NULL;
 }
 
-bool OBJ_check(OBJ *obj, OBJTYPE type, float ox, float oy)
+static bool OBJ_check(OBJ *obj, OBJTYPE type, float ox, float oy)
 {
 	return OBJ_collide(obj, type, ox, oy) != NULL;
 }
 
-void OBJ_move(OBJ *obj, float ox, float oy)
+static void OBJ_move(OBJ *obj, float ox, float oy)
 {
 	float amount;
 	// [x] get move amount
@@ -823,7 +823,7 @@ void OBJ_move(OBJ *obj, float ox, float oy)
 	OBJ_move_y(obj, amount);
 }
 
-void OBJ_move_x(OBJ *obj, float amount, float start)
+static void OBJ_move_x(OBJ *obj, float amount, float start)
 {
 	if (obj->solids)
 	{
@@ -848,7 +848,7 @@ void OBJ_move_x(OBJ *obj, float amount, float start)
 	}
 }
 
-void OBJ_move_y(OBJ *obj, float amount)
+static void OBJ_move_y(OBJ *obj, float amount)
 {
 	if (obj->solids)
 	{
@@ -876,7 +876,7 @@ void OBJ_move_y(OBJ *obj, float amount)
 // player entity //
 ///////////////////
 
-void PLAYER_init(OBJ *this)
+static void PLAYER_init(OBJ *this)
 {
 	this->p_jump = false;
 	this->p_dash = false;
@@ -893,8 +893,8 @@ void PLAYER_init(OBJ *this)
 	create_hair(this);
 }
 
-OBJ player_dummy_copy; // see below
-void PLAYER_update(OBJ *this)
+static OBJ player_dummy_copy; // see below
+static void PLAYER_update(OBJ *this)
 {
 	if (pause_player)
 		return;
@@ -1161,7 +1161,7 @@ void PLAYER_update(OBJ *this)
 	// was on the ground
 	this->was_on_ground = on_ground;
 }
-void PLAYER_draw(OBJ *this)
+static void PLAYER_draw(OBJ *this)
 {
 	// clamp in screen
 	if (this->x < -1 || this->x > 121)
@@ -1185,12 +1185,12 @@ void create_hair(OBJ *obj)
 	}
 }
 
-void set_hair_color(int djump)
+static void set_hair_color(int djump)
 {
 	P8pal(8, (djump == 1 ? 8 : (djump == 2 ? (7 + P8flr(((int)(((float)frames) / 3.0)) % 2) * 4) : 12)));
 }
 
-void draw_hair(OBJ *obj, int facing)
+static void draw_hair(OBJ *obj, int facing)
 {
 	float last_x = obj->x + 4 - facing * 2;
 	float last_y = obj->y + (P8btn(k_down) ? 4 : 3);
@@ -1207,13 +1207,13 @@ void draw_hair(OBJ *obj, int facing)
 	} while (!h->isLast);
 }
 
-void unset_hair_color()
+static void unset_hair_color()
 {
 	P8pal(8, 8);
 }
 
 // player_spawn
-void PLAYER_SPAWN_init(OBJ *this)
+static void PLAYER_SPAWN_init(OBJ *this)
 {
 	this->spr = 3;
 	this->target.x = this->x;
@@ -1225,7 +1225,7 @@ void PLAYER_SPAWN_init(OBJ *this)
 	this->solids = false;
 	create_hair(this);
 }
-void PLAYER_SPAWN_update(OBJ *this)
+static void PLAYER_SPAWN_update(OBJ *this)
 {
 	// jumping up
 	if (this->state == 0)
@@ -1268,7 +1268,7 @@ void PLAYER_SPAWN_update(OBJ *this)
 		}
 	}
 }
-void PLAYER_SPAWN_draw(OBJ *this)
+static void PLAYER_SPAWN_draw(OBJ *this)
 {
 	set_hair_color(max_djump);
 	draw_hair(this, 1);
@@ -1277,12 +1277,12 @@ void PLAYER_SPAWN_draw(OBJ *this)
 }
 
 // spring
-void SPRING_init(OBJ *this)
+static void SPRING_init(OBJ *this)
 {
 	this->hide_in = 0;
 	this->hide_for = 0;
 }
-void SPRING_update(OBJ *this)
+static void SPRING_update(OBJ *this)
 {
 	if (this->hide_for > 0)
 	{
@@ -1334,20 +1334,20 @@ void SPRING_update(OBJ *this)
 	}
 }
 
-void break_spring(OBJ *obj)
+static void break_spring(OBJ *obj)
 {
 	obj->hide_in = 15;
 }
 
 // balloon
-void BALLOON_init(OBJ *this)
+static void BALLOON_init(OBJ *this)
 {
 	this->offset = P8rnd(1);
 	this->start = this->y;
 	this->timer = 0;
 	this->hitbox = (HITBOX){.x = -1, .y = -1, .w = 10, .h = 10};
 }
-void BALLOON_update(OBJ *this)
+static void BALLOON_update(OBJ *this)
 {
 	if (this->spr == 22)
 	{
@@ -1377,7 +1377,7 @@ void BALLOON_update(OBJ *this)
 		this->spr = 22;
 	}
 }
-void BALLOON_draw(OBJ *this)
+static void BALLOON_draw(OBJ *this)
 {
 	if (this->spr == 22)
 	{
@@ -1387,12 +1387,12 @@ void BALLOON_draw(OBJ *this)
 }
 
 // fall_floor
-void FALL_FLOOR_init(OBJ *this)
+static void FALL_FLOOR_init(OBJ *this)
 {
 	this->state = 0;
 	// this->solid=true; //this is a typo.. not fixing in order to maintain original behaviour
 }
-void FALL_FLOOR_update(OBJ *this)
+static void FALL_FLOOR_update(OBJ *this)
 {
 	// idling
 	if (this->state == 0)
@@ -1425,7 +1425,7 @@ void FALL_FLOOR_update(OBJ *this)
 		}
 	}
 }
-void FALL_FLOOR_draw(OBJ *this)
+static void FALL_FLOOR_draw(OBJ *this)
 {
 	if (this->state != 2)
 	{
@@ -1440,7 +1440,7 @@ void FALL_FLOOR_draw(OBJ *this)
 	}
 }
 
-void break_fall_floor(OBJ *obj)
+static void break_fall_floor(OBJ *obj)
 {
 	if (obj->state == 0)
 	{
@@ -1456,7 +1456,7 @@ void break_fall_floor(OBJ *obj)
 }
 
 // smoke
-void SMOKE_init(OBJ *this)
+static void SMOKE_init(OBJ *this)
 {
 	this->spr = 29;
 	this->spd.y = -0.1;
@@ -1467,7 +1467,7 @@ void SMOKE_init(OBJ *this)
 	this->flip_y = maybe();
 	this->solids = false;
 }
-void SMOKE_update(OBJ *this)
+static void SMOKE_update(OBJ *this)
 {
 	this->spr += 0.2;
 	if (this->spr >= 32)
@@ -1479,12 +1479,12 @@ void SMOKE_update(OBJ *this)
 // fruit
 // tile=26,
 // if_not_fruit=true,
-void FRUIT_init(OBJ *this)
+static void FRUIT_init(OBJ *this)
 {
 	this->start = this->y;
 	this->off = 0;
 }
-void FRUIT_update(OBJ *this)
+static void FRUIT_update(OBJ *this)
 {
 	OBJ *hit = OBJ_collide(this, OBJ_PLAYER, 0, 0);
 	if (hit != NULL)
@@ -1503,7 +1503,7 @@ void FRUIT_update(OBJ *this)
 // fly_fruit
 // tile=28,
 // if_not_fruit=true,
-void FLY_FRUIT_init(OBJ *this)
+static void FLY_FRUIT_init(OBJ *this)
 {
 	this->start = this->y;
 	this->fly = false;
@@ -1511,7 +1511,7 @@ void FLY_FRUIT_init(OBJ *this)
 	this->solids = false;
 	this->sfx_delay = 8;
 }
-void FLY_FRUIT_update(OBJ *this)
+static void FLY_FRUIT_update(OBJ *this)
 {
 	bool do_destroy_object = false; // LEMON: see PLAYER_update..
 	// fly away
@@ -1554,7 +1554,7 @@ void FLY_FRUIT_update(OBJ *this)
 	if (do_destroy_object)
 		destroy_object(this);
 }
-void FLY_FRUIT_draw(OBJ *this)
+static void FLY_FRUIT_draw(OBJ *this)
 {
 	float off = 0;
 	if (!this->fly)
@@ -1575,7 +1575,7 @@ void FLY_FRUIT_draw(OBJ *this)
 }
 
 // lifeup
-void LIFEUP_init(OBJ *this)
+static void LIFEUP_init(OBJ *this)
 {
 	this->spd.y = -0.25;
 	this->duration = 30;
@@ -1584,7 +1584,7 @@ void LIFEUP_init(OBJ *this)
 	this->flash = 0;
 	this->solids = false;
 }
-void LIFEUP_update(OBJ *this)
+static void LIFEUP_update(OBJ *this)
 {
 	this->duration -= 1;
 	if (this->duration <= 0)
@@ -1592,7 +1592,7 @@ void LIFEUP_update(OBJ *this)
 		destroy_object(this);
 	}
 }
-void LIFEUP_draw(OBJ *this)
+static void LIFEUP_draw(OBJ *this)
 {
 	this->flash += 0.5;
 
@@ -1602,7 +1602,7 @@ void LIFEUP_draw(OBJ *this)
 // fake_wall
 // tile=64,
 // if_not_fruit=true,
-void FAKE_WALL_update(OBJ *this)
+static void FAKE_WALL_update(OBJ *this)
 {
 	this->hitbox = (HITBOX){.x = -1, .y = -1, .w = 18, .h = 18};
 	OBJ *hit = OBJ_collide(this, OBJ_PLAYER, 0, 0);
@@ -1623,7 +1623,7 @@ void FAKE_WALL_update(OBJ *this)
 	}
 	this->hitbox = (HITBOX){.x = 0, .y = 0, .w = 16, .h = 16};
 }
-void FAKE_WALL_draw(OBJ *this)
+static void FAKE_WALL_draw(OBJ *this)
 {
 	P8spr(64, this->x, this->y, 1, 1, false, false);
 	P8spr(65, this->x + 8, this->y, 1, 1, false, false);
@@ -1634,7 +1634,7 @@ void FAKE_WALL_draw(OBJ *this)
 // key
 // tile=8,
 // if_not_fruit=true,
-void KEY_update(OBJ *this)
+static void KEY_update(OBJ *this)
 {
 	int was = P8flr(this->spr);
 	this->spr = 9 + (P8sin((float)frames / 30.0) + 0.5) * 1;
@@ -1654,13 +1654,13 @@ void KEY_update(OBJ *this)
 // chest
 // tile=20,
 // if_not_fruit=true,
-void CHEST_init(OBJ *this)
+static void CHEST_init(OBJ *this)
 {
 	this->x -= 4;
 	this->start = this->x;
 	this->timer = 20;
 }
-void CHEST_update(OBJ *this)
+static void CHEST_update(OBJ *this)
 {
 	if (has_key)
 	{
@@ -1676,14 +1676,14 @@ void CHEST_update(OBJ *this)
 }
 
 // platform
-void PLATFORM_init(OBJ *this)
+static void PLATFORM_init(OBJ *this)
 {
 	this->x -= 4;
 	this->solids = false;
 	this->hitbox.w = 16;
 	this->last = this->x;
 }
-void PLATFORM_update(OBJ *this)
+static void PLATFORM_update(OBJ *this)
 {
 	this->spd.x = this->dir * 0.65;
 	if (this->x < -16)
@@ -1704,7 +1704,7 @@ void PLATFORM_update(OBJ *this)
 	}
 	this->last = this->x;
 }
-void PLATFORM_draw(OBJ *this)
+static void PLATFORM_draw(OBJ *this)
 {
 	P8spr(11, this->x, this->y - 1, 1, 1, false, false);
 	P8spr(12, this->x + 8, this->y - 1, 1, 1, false, false);
@@ -1713,7 +1713,7 @@ void PLATFORM_draw(OBJ *this)
 // message
 // tile=86,
 // last=0,
-void MESSAGE_draw(OBJ *this)
+static void MESSAGE_draw(OBJ *this)
 {
 	this->text = "-- celeste mountain --#this memorial to those# perished on the climb";
 	if (OBJ_check(this, OBJ_PLAYER, 4, 0))
@@ -1754,12 +1754,12 @@ void MESSAGE_draw(OBJ *this)
 
 // big_chest
 // tile=96,
-void BIG_CHEST_init(OBJ *this)
+static void BIG_CHEST_init(OBJ *this)
 {
 	this->state = 0;
 	this->hitbox.w = 16;
 }
-void BIG_CHEST_draw(OBJ *this)
+static void BIG_CHEST_draw(OBJ *this)
 {
 	if (this->state == 0)
 	{
@@ -1812,13 +1812,13 @@ void BIG_CHEST_draw(OBJ *this)
 }
 
 // orb
-void ORB_init(OBJ *this)
+static void ORB_init(OBJ *this)
 {
 	this->spd.y = -4;
 	this->solids = false;
 	this->particle_count = 0;
 }
-void ORB_draw(OBJ *this)
+static void ORB_draw(OBJ *this)
 {
 	this->spd.y = appr(this->spd.y, 0, 0.5);
 	OBJ *hit = OBJ_collide(this, OBJ_PLAYER, 0, 0);
@@ -1845,7 +1845,7 @@ void ORB_draw(OBJ *this)
 
 // flag
 // tile=118,
-void FLAG_init(OBJ *this)
+static void FLAG_init(OBJ *this)
 {
 	this->x += 5;
 	this->score = 0;
@@ -1858,7 +1858,7 @@ void FLAG_init(OBJ *this)
 		}
 	}
 }
-void FLAG_draw(OBJ *this)
+static void FLAG_draw(OBJ *this)
 {
 	this->spr = 118 + P8modulo(((float)frames / 5.f), 3);
 	P8spr(this->spr, this->x, this->y, 1, 1, false, false);
@@ -1886,11 +1886,11 @@ void FLAG_draw(OBJ *this)
 }
 
 // room_title
-void ROOM_TITLE_init(OBJ *this)
+static void ROOM_TITLE_init(OBJ *this)
 {
 	this->delay = 5;
 }
-void ROOM_TITLE_draw(OBJ *this)
+static void ROOM_TITLE_draw(OBJ *this)
 {
 	this->delay -= 1;
 	if (this->delay < -30)
@@ -1928,7 +1928,7 @@ void ROOM_TITLE_draw(OBJ *this)
 // object functions //
 //////////////////////-
 
-OBJ *init_object(OBJTYPE type, float x, float y)
+static OBJ *init_object(OBJTYPE type, float x, float y)
 {
 	// if (type.if_not_fruit!=NULL && got_fruit[1+level_index()]) {
 	if (OBJTYPE_prop[type].if_not_fruit && got_fruit[level_index()])
@@ -1951,7 +1951,7 @@ OBJ *init_object(OBJTYPE type, float x, float y)
 		return NULL;
 	}
 	obj->active = true;
-	short next_id = 0;
+	static short next_id = 0;
 	obj->id = next_id++;
 
 	obj->type = type;
@@ -1976,7 +1976,7 @@ OBJ *init_object(OBJTYPE type, float x, float y)
 	return obj;
 }
 
-void destroy_object(OBJ *obj)
+static void destroy_object(OBJ *obj)
 {
 	// shift all slots to the right of this object to the left, necessary to simulate loading jank
 	assert(obj >= objects && obj < objects + MAX_OBJECTS);
@@ -1987,7 +1987,7 @@ void destroy_object(OBJ *obj)
 	objects[MAX_OBJECTS - 1].active = false;
 }
 
-void kill_player(OBJ *obj)
+static void kill_player(OBJ *obj)
 {
 	sfx_timer = 12;
 	deaths += 1;
@@ -2013,13 +2013,13 @@ void kill_player(OBJ *obj)
 // room functions //
 ////////////////////
 
-void restart_room()
+static void restart_room()
 {
 	will_restart = true;
 	delay_restart = 15;
 }
 
-void next_room()
+static void next_room()
 {
 	if (room.x == 7)
 	{
@@ -2031,8 +2031,8 @@ void next_room()
 	}
 }
 
-bool room_just_loaded = false; // for debugging loading jank
-void load_room(int x, int y)
+static bool room_just_loaded = false; // for debugging loading jank
+static void load_room(int x, int y)
 {
 	has_dashed = false;
 	has_key = false;
@@ -2190,6 +2190,77 @@ void Celeste_P8_update()
 			if (start_game_flash <= -30)
 			{
 				begin_game();
+			}
+		}
+	}
+}
+
+void Celeste_P8_test()
+{
+	P8spr(1, 0*8, 0, 1, 1, 0, 0);
+	P8spr(2, 1*8, 0, 1, 1, 0, 0);
+	P8spr(3, 2*8, 0, 1, 1, 0, 0);
+	P8spr(4, 3*8, 0, 1, 1, 0, 0);
+	P8spr(5, 4*8, 0, 1, 1, 0, 0);
+	P8spr(6, 5*8, 0, 1, 1, 0, 0);
+	P8spr(7, 6*8, 0, 1, 1, 0, 0);
+	P8spr(8, 7*8, 0, 1, 1, 0, 0);
+
+	for (int i = 0; i < 128; i++)
+	{
+		for (int j = 0; j < 128; j++)
+		{
+			switch (pico8_display_memory[i][j])
+			{
+			case 0:
+				display_mem[i][j] = 0;
+				break;
+			case 1:
+				display_mem[i][j] = 34;
+				break;
+			case 2:
+				display_mem[i][j] = 6178;
+				break;
+			case 3:
+				display_mem[i][j] = 130;
+				break;
+			case 4:
+				display_mem[i][j] = 10305;
+				break;
+			case 5:
+				display_mem[i][j] = 4162;
+				break;
+			case 6:
+				display_mem[i][j] = 12486;
+				break;
+			case 7:
+				display_mem[i][j] = 14567;
+				break;
+			case 8:
+				display_mem[i][j] = 14338;
+				break;
+			case 9:
+				display_mem[i][j] = 14496;
+				break;
+			case 10:
+				display_mem[i][j] = 14561;
+				break;
+			case 11:
+				display_mem[i][j] = 225;
+				break;
+			case 12:
+				display_mem[i][j] = 2215;
+				break;
+			case 13:
+				display_mem[i][j] = 8292;
+				break;
+			case 14:
+				display_mem[i][j] = 14437;
+				break;
+			case 15:
+				display_mem[i][j] = 14533;
+				break;
+			default:
 			}
 		}
 	}
@@ -2381,43 +2452,59 @@ void Celeste_P8_draw()
 			{
 			case 0:
 				display_mem[i][j] = 0;
+				break;
 			case 1:
 				display_mem[i][j] = 34;
+				break;
 			case 2:
 				display_mem[i][j] = 6178;
+				break;
 			case 3:
 				display_mem[i][j] = 130;
+				break;
 			case 4:
 				display_mem[i][j] = 10305;
+				break;
 			case 5:
 				display_mem[i][j] = 4162;
+				break;
 			case 6:
 				display_mem[i][j] = 12486;
+				break;
 			case 7:
 				display_mem[i][j] = 14567;
+				break;
 			case 8:
 				display_mem[i][j] = 14338;
+				break;
 			case 9:
 				display_mem[i][j] = 14496;
+				break;
 			case 10:
 				display_mem[i][j] = 14561;
+				break;
 			case 11:
 				display_mem[i][j] = 225;
+				break;
 			case 12:
 				display_mem[i][j] = 2215;
+				break;
 			case 13:
 				display_mem[i][j] = 8292;
+				break;
 			case 14:
 				display_mem[i][j] = 14437;
+				break;
 			case 15:
 				display_mem[i][j] = 14533;
+				break;
 			default:
 			}
 		}
 	}
 }
 
-void draw_object(OBJ *obj)
+static void draw_object(OBJ *obj)
 {
 	if (OBJ_PROP(obj).draw != NULL)
 	{
@@ -2430,7 +2517,7 @@ void draw_object(OBJ *obj)
 	// if (floorf(obj->spr) != obj->spr) printf("?%g %s\n", obj->spr, OBJ_PROP(obj).nam);
 }
 
-void draw_time(float x, float y)
+static void draw_time(float x, float y)
 {
 	int s = seconds;
 	int m = minutes % 60;
@@ -2446,39 +2533,39 @@ void draw_time(float x, float y)
 
 // helper functions //
 //////////////////////
-float clamp(float val, float a, float b)
+static float clamp(float val, float a, float b)
 {
 
 	return P8max(a, P8min(b, val));
 }
-float appr(float val, float target, float amount)
+static float appr(float val, float target, float amount)
 {
 	return val > target
 			   ? P8max(val - amount, target)
 			   : P8min(val + amount, target);
 }
 
-float sign(float v)
+static float sign(float v)
 {
 	return v > 0 ? 1 : (v < 0 ? -1 : 0);
 }
-bool maybe()
+static bool maybe()
 {
 
 	return P8rnd(1) < 0.5;
 }
 
-bool solid_at(int x, int y, int w, int h)
+static bool solid_at(int x, int y, int w, int h)
 {
 	return tile_flag_at(x, y, w, h, 0);
 }
 
-bool ice_at(int x, int y, int w, int h)
+static bool ice_at(int x, int y, int w, int h)
 {
 	return tile_flag_at(x, y, w, h, 4);
 }
 
-bool tile_flag_at(int x, int y, int w, int h, int flag)
+static bool tile_flag_at(int x, int y, int w, int h, int flag)
 {
 	for (int i = (int)P8max(0, P8flr(x / 8)); i <= P8min(15, (x + w - 1) / 8); i++)
 	{
@@ -2493,12 +2580,12 @@ bool tile_flag_at(int x, int y, int w, int h, int flag)
 	return false;
 }
 
-int tile_at(int x, int y)
+static int tile_at(int x, int y)
 {
 	return P8mget(room.x * 16 + x, room.y * 16 + y);
 }
 
-bool spikes_at(float x, float y, int w, int h, float xspd, float yspd)
+static bool spikes_at(float x, float y, int w, int h, float xspd, float yspd)
 {
 	for (int i = (int)P8max(0, P8flr(x / 8)); i <= P8min(15, (x + w - 1) / 8); i++)
 	{

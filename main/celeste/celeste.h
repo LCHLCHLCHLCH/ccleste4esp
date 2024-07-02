@@ -25,12 +25,13 @@ extern "C"
 
 	typedef _Bool Celeste_P8_bool_t;
 
-	extern void Celeste_P8_set_rndseed(unsigned seed);
-	extern void Celeste_P8_init(void);
-	extern void Celeste_P8_update(void);
-	extern void Celeste_P8_draw(void);
+	void Celeste_P8_set_rndseed(unsigned seed);
+	void Celeste_P8_init(void);
+	void Celeste_P8_update(void);
+	void Celeste_P8_draw(void);
+	void Celeste_P8_test();
 
-	extern void Celeste_P8__DEBUG(void); // debug functionality
+	void Celeste_P8__DEBUG(void); // debug functionality
 
 	// state functionality
 	size_t Celeste_P8_get_state_size(void);
