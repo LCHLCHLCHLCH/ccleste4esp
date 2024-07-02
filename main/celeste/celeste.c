@@ -125,22 +125,17 @@ static inline void P8circfill(int X, int Y, int r, int color)
 	y = r;
 
 	/*画每个八分之一圆弧的起始点*/
-	// OLED_DrawPoint(X + x, Y + y);
-	// OLED_DrawPoint(X - x, Y - y);
-	// OLED_DrawPoint(X + y, Y + x);
-	// OLED_DrawPoint(X - y, Y - x);
-
-	pico8_display_memory[X + x][Y + y] = color;
-	pico8_display_memory[X - x][Y - y] = color;
-	pico8_display_memory[X + x][Y + y] = color;
-	pico8_display_memory[X - x][Y - y] = color;
+	pico8_display_memory[Y + y][X + x] = color;
+	pico8_display_memory[Y - y][X - x] = color;
+	pico8_display_memory[Y + y][X + x] = color;
+	pico8_display_memory[Y - y][X - x] = color;
 
 	/*遍历起始点Y坐标*/
 	for (j = -y; j < y; j++)
 	{
 		/*在指定区域画点，填充部分圆*/
 		// OLED_DrawPoint(X, Y + j);
-		pico8_display_memory[X][Y + j] = color;
+		pico8_display_memory[Y + j][X] = color;
 	}
 
 	while (x < y) // 遍历X轴的每个点
@@ -157,41 +152,29 @@ static inline void P8circfill(int X, int Y, int r, int color)
 		}
 
 		/*画每个八分之一圆弧的点*/
-		// OLED_DrawPoint(X + x, Y + y);
-		// OLED_DrawPoint(X + y, Y + x);
-		// OLED_DrawPoint(X - x, Y - y);
-		// OLED_DrawPoint(X - y, Y - x);
-		// OLED_DrawPoint(X + x, Y - y);
-		// OLED_DrawPoint(X + y, Y - x);
-		// OLED_DrawPoint(X - x, Y + y);
-		// OLED_DrawPoint(X - y, Y + x);
-		pico8_display_memory[X + x][Y + y] = color;
-		pico8_display_memory[X + y][Y + x] = color;
-		pico8_display_memory[X - x][Y - y] = color;
-		pico8_display_memory[X - y][Y - x] = color;
-		pico8_display_memory[X + x][Y - y] = color;
-		pico8_display_memory[X + y][Y - x] = color;
-		pico8_display_memory[X - x][Y + y] = color;
-		pico8_display_memory[X - y][Y + x] = color;
+		pico8_display_memory[Y + y][X + x] = color;
+		pico8_display_memory[Y + x][X + y] = color;
+		pico8_display_memory[Y - y][X - x] = color;
+		pico8_display_memory[Y - x][X - y] = color;
+		pico8_display_memory[Y - y][X + x] = color;
+		pico8_display_memory[Y - x][X + y] = color;
+		pico8_display_memory[Y + y][X - x] = color;
+		pico8_display_memory[Y + x][X - y] = color;
 
 		/*遍历中间部分*/
 		for (j = -y; j < y; j++)
 		{
 			/*在指定区域画点，填充部分圆*/
-			// OLED_DrawPoint(X + x, Y + j);
-			// OLED_DrawPoint(X - x, Y + j);
-			pico8_display_memory[X - x][Y + j] = color;
-			pico8_display_memory[X - x][Y + j] = color;
+			pico8_display_memory[Y + j][X + x] = color;
+			pico8_display_memory[Y + j][X - x] = color;
 		}
 
 		/*遍历两侧部分*/
 		for (j = -x; j < x; j++)
 		{
 			/*在指定区域画点，填充部分圆*/
-			// OLED_DrawPoint(X - y, Y + j);
-			// OLED_DrawPoint(X + y, Y + j);
-			pico8_display_memory[X - y][Y + j] = color;
-			pico8_display_memory[X + y][Y + j] = color;
+			pico8_display_memory[Y + j][X - y] = color;
+			pico8_display_memory[Y + j][X + y] = color;
 		}
 	}
 }
@@ -217,7 +200,7 @@ static inline void P8rectfill(int x, int y, int x2, int y2, int c)
 	{
 		for (j = y; j <= y2; j++)
 		{
-			pico8_display_memory[i][j] = c;
+			pico8_display_memory[j][i] = c;
 		}
 	}
 }
@@ -246,7 +229,7 @@ static inline void P8line(int X0, int Y0, int X1, int Y1, int c)
 		for (x = x0; x <= x1; x++)
 		{
 			// OLED_DrawPoint(x, y0); // 依次画点
-			pico8_display_memory[x][y0] = c;
+			pico8_display_memory[y0][x] = c;
 		}
 	}
 	else if (x0 == x1) // 竖线单独处理
@@ -263,7 +246,7 @@ static inline void P8line(int X0, int Y0, int X1, int Y1, int c)
 		for (y = y0; y <= y1; y++)
 		{
 			// OLED_DrawPoint(x0, y); // 依次画点
-			pico8_display_memory[x0][y] = c;
+			pico8_display_memory[y][x0] = c;
 		}
 	}
 	else // 斜线
@@ -324,22 +307,22 @@ static inline void P8line(int X0, int Y0, int X1, int Y1, int c)
 		if (yflag && xyflag)
 		{
 			// OLED_DrawPoint(y, -x);
-			pico8_display_memory[y][-x] = c;
+			pico8_display_memory[-x][y] = c;
 		}
 		else if (yflag)
 		{
 			// OLED_DrawPoint(x, -y);
-			pico8_display_memory[x][-y] = c;
+			pico8_display_memory[-y][x] = c;
 		}
 		else if (xyflag)
 		{
 			// OLED_DrawPoint(y, x);
-			pico8_display_memory[y][x] = c;
+			pico8_display_memory[x][y] = c;
 		}
 		else
 		{
 			// OLED_DrawPoint(x, y);
-			pico8_display_memory[x][y] = c;
+			pico8_display_memory[y][x] = c;
 		}
 
 		while (x < x1) // 遍历X轴的每个点
@@ -359,22 +342,22 @@ static inline void P8line(int X0, int Y0, int X1, int Y1, int c)
 			if (yflag && xyflag)
 			{
 				// OLED_DrawPoint(y, -x);
-				pico8_display_memory[y][-x] = c;
+				pico8_display_memory[-x][y] = c;
 			}
 			else if (yflag)
 			{
 				// OLED_DrawPoint(x, -y);
-				pico8_display_memory[x][-y] = c;
+				pico8_display_memory[-y][x] = c;
 			}
 			else if (xyflag)
 			{
 				// OLED_DrawPoint(y, x);
-				pico8_display_memory[y][x] = c;
+				pico8_display_memory[x][y] = c;
 			}
 			else
 			{
 				// OLED_DrawPoint(x, y);
-				pico8_display_memory[x][y] = c;
+				pico8_display_memory[y][x] = c;
 			}
 		}
 	}
@@ -382,7 +365,8 @@ static inline void P8line(int X0, int Y0, int X1, int Y1, int c)
 static inline int P8mget(int x, int y)
 {
 	uint8_t spr;
-	spr = map_data[map_y][map_x][y][x];
+	// spr = map_data[map_y][map_x][y][x];
+	spr = map_data[(map_y * 16 + y) * 16 * 8 + (map_x * 16 + x)];
 	return spr;
 }
 static inline bool P8fget(int t, int f)
@@ -394,17 +378,19 @@ static inline void P8camera(int x, int y)
 }
 static inline void P8map(int mx, int my, int tx, int ty, int mw, int mh, int mask)
 {
-	map_x = mx;
-	map_y = my;
 	uint8_t i, j;
 	uint8_t spr;
+	int8_t *map_data_x_base = map_data + my * (16 * 8) + mx;
 	for (i = 0; i < 16; i++)
 	{
 		for (j = 0; j < 16; j++)
 		{
-			spr = map_data[my][mx][i][j];
-			P8spr(spr, i * 8, j * 8, 1, 1, 0, 0);
+			if (*map_data_x_base != -1)
+				P8spr(*map_data_x_base, j * 8, i * 8, 1, 1, 0, 0);
+			map_data_x_base++;
 		}
+		map_data_x_base += 16 * 8;
+		map_data_x_base -= 16;
 	}
 }
 // these values dont matter as set_rndseed should be called before init, as long as they arent both zero
@@ -2104,32 +2090,11 @@ void Celeste_P8_update()
 		}
 	}
 
-	if (music_timer > 0)
-	{
-		music_timer -= 1;
-	}
-
-	if (sfx_timer > 0)
-	{
-		sfx_timer -= 1;
-	}
-
 	// cancel if (freeze
 	if (freeze > 0)
 	{
 		freeze -= 1;
 		return;
-	}
-
-	// screenshake
-	if (shake > 0)
-	{
-		shake -= 1;
-		P8camera(0, 0);
-		if (shake > 0)
-		{
-			P8camera(-2 + P8rnd(5), -2 + P8rnd(5));
-		}
 	}
 
 	// restart (soon)
@@ -2197,14 +2162,29 @@ void Celeste_P8_update()
 
 void Celeste_P8_test()
 {
-	P8spr(1, 0*8, 0, 1, 1, 0, 0);
-	P8spr(2, 1*8, 0, 1, 1, 0, 0);
-	P8spr(3, 2*8, 0, 1, 1, 0, 0);
-	P8spr(4, 3*8, 0, 1, 1, 0, 0);
-	P8spr(5, 4*8, 0, 1, 1, 0, 0);
-	P8spr(6, 5*8, 0, 1, 1, 0, 0);
-	P8spr(7, 6*8, 0, 1, 1, 0, 0);
-	P8spr(8, 7*8, 0, 1, 1, 0, 0);
+	// P8spr(1, 0*8, 0, 1, 1, 0, 0);
+	// P8spr(2, 1*8, 0, 1, 1, 0, 0);
+	// P8spr(3, 2*8, 0, 1, 1, 0, 0);
+	// P8spr(4, 3*8, 0, 1, 1, 0, 0);
+	// P8spr(5, 4*8, 0, 1, 1, 0, 0);
+	// P8spr(6, 5*8, 0, 1, 1, 0, 0);
+	// P8spr(7, 6*8, 0, 1, 1, 0, 0);
+	// P8spr(8, 7*8, 0, 1, 1, 0, 0);
+
+	// int spr_index = 0;
+
+	// for(int i=0;i<8;i++)
+	// {
+	// 	for(int j=0;j<16;j++)
+	// 	{
+	// 		P8spr(spr_index, j*8, i*8, 1, 1, 0, 0);
+	// 		spr_index++;
+	// 	}
+	// }
+
+	// P8map(32, 16, 0, 0, 0, 0, 0);
+
+	P8circfill(20, 60, 10, 4);
 
 	for (int i = 0; i < 128; i++)
 	{

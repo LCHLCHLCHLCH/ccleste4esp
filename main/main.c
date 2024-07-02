@@ -27,9 +27,9 @@ void app_main(void)
 
     while (1)
     {
-        // Celeste_P8_update();
-        // Celeste_P8_draw();
-        Celeste_P8_test();
+        Celeste_P8_update();
+        Celeste_P8_draw();
+        // Celeste_P8_test();
         display_all();
         delay_ms(33);
     }
