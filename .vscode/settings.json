@@ -1,0 +1,27 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "idf.flashType": "UART",
+  "idf.port": "/dev/ttyACM0",
+  "idf.adapterTargetName": "esp32s3",
+  "idf.openOcdConfigs": [
+    "interface/ftdi/esp32_devkitj_v1.cfg",
+    "target/esp32s3.cfg"
+  ],
+  "files.associations": {
+    "sdkconfig.h": "c",
+    "inttypes.h": "c",
+    "led.h": "c",
+    "gpio.h": "c",
+    "delay.h": "c",
+    "lcd.h": "c",
+    "lcd_init.h": "c",
+    "stdint.h": "c",
+    "cstdint": "c",
+    "stdint-gcc.h": "c",
+    "task.h": "c",
+    "freertos.h": "c",
+    "wdt_hal.h": "c",
+    "cstring": "c",
+    "spi_master.h": "c"
+  }
+}
