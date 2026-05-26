@@ -1,7 +1,5 @@
 # ccleste4esp — Celeste Classic 移植到 ESP32-S3
 
-![screenshot](ccleste/screenshot.png)
-
 将 **Celeste Classic**（PICO-8 原版《蔚蓝》）移植到 **ESP32-S3** 微控制器的项目，使用 ST7735R 128×128 LCD 和 GPIO 按键。
 
 本项目的游戏引擎来自 [lemon32767/ccleste](https://github.com/lemon32767/ccleste)，它本身是用 C 语言逐行从 PICO-8 Lua 代码手工翻译的，不依赖任何标准库以外的代码，且不做动态内存分配。
